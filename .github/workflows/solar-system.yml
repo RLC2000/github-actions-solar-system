@@ -36,3 +36,27 @@ jobs:
           with:
             name: Mocha-Test-Result
             path: test-results.xml
+    code-coverage:
+      runs-on: ubuntu-latest
+      steps:
+        - name: checkout repo
+          id: repo_check
+          uses: actions/checkout@v4
+
+        - name: NodeJs depend
+          uses: actions/setup-node@v4
+          with:
+            node-version: 18
+        
+        - name: Install Dependencies
+          run: npm install
+
+        - name: coverage check
+          run: npm run code-coverage
+          
+        - name: upload result
+          uses: actions/upload-artifact@v4
+          with:
+            name: Code=Coverage-Result
+            path: coverage
+            retention-days: 5
