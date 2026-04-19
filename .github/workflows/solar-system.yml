@@ -25,6 +25,12 @@ jobs:
           uses: actions/setup-node@v4
           with:
             node-version: 20
+
+        - name: some caching
+          uses: actions/cache@v4
+          with:
+            path:  ./node_modules
+            key: ${{github.ref_name}}_${{hashFiles('package.json')}}
     
         - name: Install Dependencies
           run: npm install
@@ -38,3 +44,35 @@ jobs:
           with:
             name: Mocha-Test-Result
             path: test-results.xml
+      
+    code-coverage:
+      runs-on: ubuntu-latest
+      steps:
+        - name: check it out
+          uses: actions/checkout@v4
+        
+        - name: setup node
+          uses: actions/setup-node@v4
+          with:
+            # registry-url: .. 
+            node-version: '18'
+        
+        - name: some caching
+          uses: actions/cache@v4
+          with:
+            path: ./node_modules
+            key: ${{github.ref_name}}_${{hashFiles('package.json')}}
+
+        - name: Install depdencies.
+          run: npm install
+
+        - name: code coverage
+          run: npm run code-coverage
+
+        - name: Archive Test Result
+          if: ${{ always() }}
+          uses: actions/upload-artifact@v4
+          with:
+            name: Code-Coverage-Result
+            path: coverage
+            retention-days: 5
