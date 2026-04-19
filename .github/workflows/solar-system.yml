@@ -14,7 +14,7 @@ env:
 
 jobs:
     unit-testing:
-        if: ${{github.ref_name == 'feature/*'}}
+        if: contains(github.ref_name,'feature/')
         name: Unit Testing
         runs-on: ubuntu-latest
         steps:
